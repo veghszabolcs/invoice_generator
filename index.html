@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Invoice generator</title>
+</head>
+
+<body>
+    <h1 class="text-center">Invoice generator</h1>
+    <div class="container col-md-7 col-sm-12 customBorder">
+        <div>
+            <form action="POST" class="form">
+                <div class="form-group">
+                    <label for="customerName">Customer Name</label>
+                    <input type="text" class="form-control" id="customerName" placeholder="Enter customer name">
+                </div>
+                <div class="form-group">
+                    <label for="dueDate">Due Date</label>
+                    <input type="date" class="form-control" id="dueDate">
+                </div>
+
+                <div class="form-group">
+                    <div id="itemsContainer" class="form-group"></div>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-success" id="addItem">Add Item</button>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" id="generateInvoice" class="btn btn-primary">Generate Invoice</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var generateButton = document.getElementById("generateInvoice");
+            generateButton.disabled = true;
+            generateButton.style.cursor = "not-allowed";
+            generateButton.title = "Add at least one item to generate invoice";
+
+            itemQt = 0;
+
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById("dueDate").setAttribute('min', today);
+
+            document.getElementById("addItem").addEventListener("click", function () {
+                var container = document.getElementById("itemsContainer");
+                var itemID = 'item-' + itemQt; // Unique ID for each item
+                itemQt++;
+                var inputHTML = `<div class="form-row" id="${itemID}" class="">
+                                    <div class="form-group col-md-11">
+                                        <input type="text" class="form-control" placeholder="Item Name">
+                                        <input type="number" class="form-control" placeholder="Quantity">
+                                        <input type="number" class="form-control" placeholder="Price">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <button type="button" class="btn btn-danger deleteItem" data-item="${itemID}" style="height: 100%;">Delete</button>
+                                    </div>
+                                </div>`;
+                container.insertAdjacentHTML('beforeend', inputHTML);
+
+                if (itemQt > 0) {
+                    generateButton.disabled = false;
+                    generateButton.style.cursor = "pointer";
+                }
+            });
+
+            document.getElementById("itemsContainer").addEventListener("click", function (e) {
+                if (e.target && e.target.classList.contains("deleteItem")) {
+                    var itemId = e.target.getAttribute("data-item");
+                    document.getElementById(itemId).remove();
+                }
+                itemQt--;
+
+                if (itemQt === 0) {
+                    console.log(itemQt);
+                    generateButton.disabled = true;
+                    generateButton.title = "Add at least one item to generate invoice";
+                    generateButton.style.cursor = "not-allowed";
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

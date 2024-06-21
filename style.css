@@ -1,0 +1,10 @@
+body{
+    background-color: #CDE1DC;
+}
+
+.customBorder{
+    border: 1px solid black !important;
+    border-radius: 15px;
+    padding: 15px;
+    background-color: rgb(205,245,220);
+}
